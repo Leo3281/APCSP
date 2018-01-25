@@ -1,0 +1,88 @@
+#PANCAKE SORTING PROGRAM
+#It receives a user-input text and it sorts it alphabetically-inverse using a "pancake sorting" algorithm
+
+#converts a text string into a list of decimals
+def to_decimal(text): #function receives text string as an input
+    n_char = len(text) #defining the length of the string
+    list_decimals = [] #creating an empty array that will contain the ASCII numbers corresponding to the characters
+    for n in range (n_char): #for loop
+        list_decimals.append(ord(text[n])) #This takes each character of the string, and converts it into its corresponding ASCII number. Then, it appends the number to the array
+    return list_decimals #The function outputs an array of integers
+
+
+#converts a list of decimals into a text string
+def to_text_string(passed_list): #function receives number array as an input
+    length = len(passed_list) #defining the length of the array
+    output_string = "" #creating an empty string which will contain the corresponding ASCII characters.
+    for n in range (length): #for loop
+        output_string += chr(passed_list[n]) #converting ASCII number back into character and adding it to output_string
+    return output_string #The function outputs a string of text
+
+
+#Executes a double-flip of the pancake stack around the largest pancake
+def double_flip_pancake(passed_list): #Function receives input as an array of numbers
+    pivot = find_maximum(passed_list) #defining the position of the maximum number in the array as "pivot"
+    if pivot > 0: #if statement
+        flipped_portion = passed_list[:pivot-1:-1] #taking the part of the array from "pivot", until its end, and listing it from right to left
+        #print("FLIPPED PORTION = %s\n" % flipped_portion)
+        initial_portion = passed_list[:pivot] #takes the remaining part of the array
+        #print("INITIAL PORTION = %s\n" % initial_portion)
+        output_list = initial_portion + flipped_portion #combines the arrays
+        print("STEP 1 LARGEST PANCAKE FLIPPED TO THE TOP OF THE STACK = %s\n" % output_list)
+        output_list = output_list[::-1] #does the second flip, ie flips the whole array
+        print("STEP 2 LARGEST PANCAKE FLIPPED TO THE BOTTOM OF THE STACK = %s\n" % output_list)
+    else: #this is if the position of the maximum number in the array is 0, ie the number is already at the bottom
+        output_list = passed_list #assigning the value of passed_list to output list
+        print("STEP 2 PANCAKE FLIP LIST = %s\n" % output_list)
+    return output_list #output of function
+
+
+#sorts list of decimals progressively from higher number to lower using pancakes double-flips
+def flipping_pancake(passed_list): #Function receives input as an array of numbers
+    j = 0 # initialized variable of loop
+    length = len(passed_list) #calling "length" the length of the input
+    output_list = [] #creating an empty array
+    temporary_list = passed_list #making a copy of the original list passed to the function, so that it can still be used
+    while j < length: #while loop
+        print("\nDOUBLE FLIP NUMBER: %d\n" % (j+1))
+        temporary_list = double_flip_pancake(temporary_list) #running "temporary_list" through "double_flip_pancake", and making "temporary_list" equal that
+        output_list.append(temporary_list[0]) #taking the first element of the array (the largest number) and adding to the new array which will contain the final, sorted text
+        print("PROGRESSIVE SORTED LIST = %s\n" % output_list)
+        temporary_list = temporary_list[1:] #removes position [0], which has already been sorted and placed in the new array
+        #print("INPUT LIST TO DOUBLE PANCAKE FLIPS = %s\n" % temporary_list)
+        j += 1
+    return output_list #output of function
+
+
+#finds the maximum decimal number in a list and returns its index number
+def find_maximum(list): #defining how to find the maximum number in an array
+    n_items = len(list) #defining the length of the list as "n_items"
+    maximum = 0 #calling maximum 0
+    index_maximum = 0 #calling the position of "maximum" within the array 0
+    for n in range(n_items): #for loop
+        if list[n] > maximum: #if statement that runs if the corresponding value in the array is > maximum
+            maximum = list[n] #if this is the case, replacing "maximum" with this new value
+            index_maximum = n #calling the position of this new value for "maximum" "n"
+    return index_maximum #output of function
+
+
+print("\n\nThis program allows to input a text and sort it alphabetically-inverse using a 'pancake sorting' algorithm")
+print("Do you want to continue: y/n")
+
+whattodo = input() #user input
+while whattodo not in ("y", "n", "Y", "N"):
+    print("Please enter y or n")
+    whattodo = input()
+
+if whattodo == "n" or whattodo == "N":
+    exit()
+
+print("Enter the desired text to be sorted")
+input_text = input()
+print("\nUNSORTED TEXT = %s\n" % input_text) #printing the newly entered, unsorted text
+
+decimal_list = to_decimal(input_text) #converting the text to an array of its corresponding ASCII numbers
+print("LIST OF DECIMAL EQUIVALENTS = %s\n" % decimal_list)
+
+final_sorted_list = to_text_string(flipping_pancake(decimal_list)) #running the pancake sorting algorithm on the numerical ASCII values and converting them back into text
+print("FINAL SORTED LIST = %s\n" % final_sorted_list) #printing out final output
